@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="theme-color" content="#1a1a2e"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Фінанси"/>
+<title>Мої фінанси</title>
+<link rel="manifest" id="manifestLink"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0f0f1a;--bg2:#1a1a2e;--bg3:#252540;
+  --text:#e8e8f0;--text2:#9090b0;--border:#2a2a45;
+  --green:#1D9E75;--purple:#7F77DD;--red:#E24B4A;--orange:#D85A30;
+  --radius:12px;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;min-height:100vh;padding-bottom:80px}
+input,select{background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:15px;font-family:var(--font);padding:10px 12px;width:100%;outline:none}
+input:focus,select:focus{border-color:var(--purple)}
+select option{background:var(--bg2)}
+button{cursor:pointer;font-family:var(--font);font-size:14px;border:none;border-radius:8px;transition:opacity .15s}
+button:active{opacity:.7}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;color:var(--text2);padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;border-radius:0}
+nav button.active{color:var(--purple)}
+nav button svg{width:22px;height:22px}
+header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 16px 12px;position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center}
+header h1{font-size:19px;font-weight:600}
+.wrap{max-width:600px;margin:0 auto;padding:16px}
+.toggle{display:flex;gap:8px;margin-bottom:18px}
+.toggle button{flex:1;padding:10px;font-weight:500;font-size:14px;border:1px solid var(--border);background:var(--bg3);color:var(--text2)}
+.toggle button.inc.active{background:var(--green);color:#fff;border-color:var(--green)}
+.toggle button.exp.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 10px}
+.stat-label{font-size:11px;color:var(--text2);margin-bottom:4px}
+.stat-val{font-size:16px;font-weight:600}
+.entry{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;margin-bottom:8px;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-right:10px}
+.entry-info{flex:1;min-width:0}
+.entry-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.entry-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.entry-amt{font-weight:600;font-size:15px;margin-right:10px;white-space:nowrap}
+.del-btn{background:none;border:none;color:var(--text2);font-size:20px;padding:0;line-height:1;flex-shrink:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.chip{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 10px;font-size:13px}
+.chip .cdot{width:7px;height:7px;border-radius:50%}
+.chip .cx{background:none;border:none;color:var(--text2);font-size:15px;padding:0;margin-left:2px}
+.sec{font-size:12px;font-weight:600;color:var(--text2);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.5px}
+.add-row{display:flex;gap:8px}
+.add-row input{flex:1}
+.add-row button{padding:0 16px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:20px;border-radius:8px}
+.submit{width:100%;padding:13px;font-size:15px;font-weight:600;margin-top:6px;color:#fff}
+.submit.inc{background:var(--green)}
+.submit.exp{background:var(--purple)}
+.filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.filters select{flex:1;min-width:120px}
+.legend{display:flex;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
+.leg span{width:10px;height:10px;border-radius:2px;display:inline-block}
+.empty{text-align:center;color:var(--text2);padding:40px 20px;font-size:14px}
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#333;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;opacity:0;transition:all .3s;pointer-events:none;z-index:200}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Mono sync */
+.sync-bar{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px}
+.sync-bar h3{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.sync-info{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5}
+.sync-row{display:flex;gap:8px;align-items:center}
+.sync-row input{flex:1;font-size:13px;padding:8px 10px}
+.sync-btn{padding:8px 14px;background:var(--orange);color:#fff;font-weight:600;font-size:13px;white-space:nowrap;flex-shrink:0}
+.sync-status{font-size:12px;margin-top:8px;color:var(--text2)}
+.sync-status.ok{color:var(--green)}
+.sync-status.err{color:var(--red)}
+.badge{background:var(--orange);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;margin-left:4px}
+.mono-tag{font-size:10px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1px 5px;color:var(--text2);margin-left:4px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💸 Мої фінанси</h1>
+  <button onclick="setTab('sync')" style="background:var(--orange);color:#fff;padding:6px 12px;font-size:13px;font-weight:600">Mono</button>
+</header>
+
+<div class="wrap" id="app"></div>
+<nav>
+  <button onclick="setTab('dashboard')" id="nav-dashboard">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Огляд
+  </button>
+  <button onclick="setTab('add')" id="nav-add">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    Додати
+  </button>
+  <button onclick="setTab('history')" id="nav-history">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+    Історія
+  </button>
+  <button onclick="setTab('categories')" id="nav-categories">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h6"/></svg>
+    Категорії
+  </button>
+</nav>
+<div id="toast"></div>
+
+<script>
+// ── Monobank MCC → категорія ───────────────────────────────
+const MCC_MAP = {
+  // Їжа та ресторани
+  5411:"Їжа",5412:"Їжа",5422:"Їжа",5441:"Їжа",5451:"Їжа",5462:"Їжа",5499:"Їжа",
+  5812:"Їжа",5813:"Їжа",5814:"Їжа",5900:"Їжа",
+  // Транспорт
+  4111:"Транспорт",4112:"Транспорт",4121:"Транспорт",4131:"Транспорт",
+  4411:"Транспорт",4511:"Транспорт",4784:"Транспорт",4789:"Транспорт",
+  5541:"Транспорт",5542:"Транспорт",5571:"Транспорт",5599:"Транспорт",
+  7511:"Транспорт",7512:"Транспорт",7513:"Транспорт",
+  // Здоров'я
+  5047:"Здоров'я",5122:"Здоров'я",5912:"Здоров'я",8011:"Здоров'я",
+  8021:"Здоров'я",8049:"Здоров'я",8062:"Здоров'я",8099:"Здоров'я",
+  // Розваги
+  5735:"Розваги",5941:"Розваги",5945:"Розваги",7011:"Розваги",7012:"Розваги",
+  7832:"Розваги",7922:"Розваги",7991:"Розваги",7993:"Розваги",7996:"Розваги",
+  7999:"Розваги",
+  // Одяг
+  5600:"Одяг",5611:"Одяг",5621:"Одяг",5631:"Одяг",5641:"Одяг",
+  5651:"Одяг",5661:"Одяг",5691:"Одяг",5699:"Одяг",
+  // Комунальні
+  4900:"Комунальні",4911:"Комунальні",4924:"Комунальні",4941:"Комунальні",
+  4961:"Комунальні",4974:"Комунальні",
+  // Техніка / онлайн
+  5045:"Техніка",5065:"Техніка",5734:"Техніка",5732:"Техніка",
+  5999:"Онлайн",7372:"Онлайн",7374:"Онлайн",
+};
+
+const ECOLS=["#7F77DD","#D85A30","#D4537E","#E24B4A","#BA7517","#888780","#378ADD","#639922","#1D9E75","#9B59B6"];
+const ICOLS=["#1D9E75","#378ADD","#639922","#7F77DD","#3B6D11","#0C447C","#D4537E","#BA7517","#1D9E75"];
+
+let state={
+  expenses:[],incomes:[],
+  expCats:["Їжа","Транспорт","Розваги","Здоров'я","Одяг","Комунальні","Техніка","Онлайн","Інше"],
+  incCats:["Зарплата","Фріланс","Подарунок","Інвестиції","Інше"],
+  tab:"dashboard",addType:"expense",
+  filterMonth:"",filterCat:"Всі",histType:"all",catType:"expense",
+  form:{amount:"",desc:"",cat:"",date:todayStr()},
+  monoToken:"",monoAccount:"",monoLastSync:0,monoAccounts:[],
+  syncStatus:"",syncMsg:""
+};
+
+function load(){
+  try{const v=localStorage.getItem("fin_v3");if(v)Object.assign(state,JSON.parse(v));}catch{}
+  state.tab="dashboard";state.form.date=todayStr();
+  state.syncStatus="";state.syncMsg="";
+}
+function save(){
+  try{localStorage.setItem("fin_v3",JSON.stringify({
+    expenses:state.expenses,incomes:state.incomes,
+    expCats:state.expCats,incCats:state.incCats,
+    monoToken:state.monoToken,monoAccount:state.monoAccount,
+    monoLastSync:state.monoLastSync,monoAccounts:state.monoAccounts
+  }));}catch{}
+}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function fmt(n){return (+n).toLocaleString("uk-UA",{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+// ── Monobank API ───────────────────────────────────────────
+async function monoFetchClient(){
+  const r=await fetch("https://api.monobank.ua/personal/client-info",{
+    headers:{"X-Token":state.monoToken}
+  });
+  if(!r.ok)throw new Error("Невірний токен або помилка API");
+  return r.json();
+}
+
+async function monoFetchStatement(account,from,to){
+  const r=await fetch(`https://api.monobank.ua/personal/statement/${account}/${from}/${to}`,{
+    headers:{"X-Token":state.monoToken}
+  });
+  if(r.status===429)throw new Error("Забагато запитів — зачекай хвилину");
+  if(!r.ok)throw new Error("Помилка завантаження транзакцій");
+  return r.json();
+}
+
+function mccToCategory(mcc){
+  return MCC_MAP[mcc]||"Інше";
+}
+
+async function syncMono(){
+  if(!state.monoToken){toast("Введи токен Monobank");return;}
+  if(!state.monoAccount){toast("Обери рахунок");return;}
+
+  state.syncStatus="loading";state.syncMsg="Завантаження...";render();
+
+  try{
+    // Завжди беремо останні 30 днів
+    const now=Math.floor(Date.now()/1000);
+    const from=now - 30*24*3600;
+    const to=now;
+
+    const txs=await monoFetchStatement(state.monoAccount,from,to);
+    let added=0;
+
+    txs.forEach(tx=>{
+      // Тільки витрати (від'ємні суми)
+      if(tx.amount>=0)return;
+      const id="mono_"+tx.id;
+      // Не дублюємо
+      if(state.expenses.find(e=>e.id===id))return;
+      const amt=Math.abs(tx.amount)/100;
+      const date=new Date(tx.time*1000).toISOString().slice(0,10);
+      const cat=mccToCategory(tx.mcc);
+      // Додаємо категорію якщо немає
+      if(!state.expCats.includes(cat))state.expCats.push(cat);
+      state.expenses.unshift({
+        id,amount:amt,
+        desc:tx.description||tx.merchantName||cat,
+        cat,date,fromMono:true
+      });
+      added++;
+    });
+
+    state.expenses.sort((a,b)=>b.date.localeCompare(a.date));
+    state.monoLastSync=to;
+    state.syncStatus="ok";
+    const total=txs.length;
+    state.syncMsg=added>0
+      ?`✅ Додано ${added} з ${total} транзакцій`
+      :total>0
+        ?`✅ Всі ${total} транзакцій вже є (дублікати)`
+        :`✅ API повернув 0 транзакцій — спробуй інший рахунок`;
+    save();render();
+    toast(state.syncMsg);
+  }catch(e){
+    state.syncStatus="err";state.syncMsg="❌ "+e.message;
+    render();
+  }
+}
+
+async function loadAccounts(){
+  if(!state.monoToken){toast("Спочатку введи токен");return;}
+  state.syncStatus="loading";state.syncMsg="Завантаження рахунків...";render();
+  try{
+    const info=await monoFetchClient();
+    state.monoAccounts=info.accounts.map(a=>({
+      id:a.id,
+      label:`${a.type==="black"?"⚫ Чорна":"💳 "+a.type} — ₴${fmt(a.balance/100)} (${a.currencyCode===980?"UAH":a.currencyCode})`
+    }));
+    if(!state.monoAccount&&state.monoAccounts.length)
+      state.monoAccount=state.monoAccounts[0].id;
+    state.syncStatus="ok";state.syncMsg="✅ Рахунки завантажено";
+    save();render();
+  }catch(e){
+    state.syncStatus="err";state.syncMsg="❌ "+e.message;render();
+  }
+}
+
+// ── Charts ─────────────────────────────────────────────────
+function pieChartSVG(data,size=130){
+  if(!data.length)return'<p style="color:var(--text2);font-size:13px;text-align:center;padding:20px 0">Немає даних</p>';
+  const cx=size/2,cy=size/2,r=size/2-8,total=data.reduce((s,d)=>s+d.amount,0);
+  let angle=-Math.PI/2,paths="";
+  data.forEach(d=>{
+    const sweep=(d.amount/total)*2*Math.PI;
+    const x1=cx+r*Math.cos(angle),y1=cy+r*Math.sin(angle);
+    angle+=sweep;
+    const x2=cx+r*Math.cos(angle),y2=cy+r*Math.sin(angle);
+    const large=sweep>Math.PI?1:0;
+    paths+=`<path d="M${cx},${cy} L${x1.toFixed(1)},${y1.toFixed(1)} A${r},${r} 0 ${large},1 ${x2.toFixed(1)},${y2.toFixed(1)} Z" fill="${d.color}" stroke="#0f0f1a" stroke-width="2"/>`;
+  });
+  return`<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${paths}</svg>`;
+}
+
+function barChartSVG(fExp,fInc){
+  const byDay={};
+  fExp.forEach(e=>{byDay[e.date]=byDay[e.date]||{exp:0,inc:0};byDay[e.date].exp+=e.amount;});
+  fInc.forEach(e=>{byDay[e.date]=byDay[e.date]||{exp:0,inc:0};byDay[e.date].inc+=e.amount;});
+  const sorted=Object.entries(byDay).sort((a,b)=>a[0].localeCompare(b[0])).slice(-14);
+  if(!sorted.length)return"";
+  const w=340,h=100,pad=20,max=Math.max(...sorted.flatMap(([,v])=>[v.exp,v.inc]),1);
+  const slot=(w-pad*2)/sorted.length,bw=Math.min(10,slot/2-1);
+  let bars="";
+  sorted.forEach(([date,v],i)=>{
+    const x=pad+i*slot+slot/2;
+    const hI=Math.round((v.inc/max)*h),hE=Math.round((v.exp/max)*h);
+    bars+=`<rect x="${(x-bw-1).toFixed(1)}" y="${(h-hI+4).toFixed(1)}" width="${bw}" height="${hI}" rx="2" fill="#1D9E75" opacity=".85"/>`;
+    bars+=`<rect x="${(x+1).toFixed(1)}" y="${(h-hE+4).toFixed(1)}" width="${bw}" height="${hE}" rx="2" fill="#7F77DD" opacity=".85"/>`;
+    bars+=`<text x="${x.toFixed(1)}" y="${h+18}" text-anchor="middle" font-size="9" fill="#9090b0">${date.slice(5)}</text>`;
+  });
+  return`<svg viewBox="0 0 ${w} ${h+24}" width="100%" style="display:block">${bars}</svg>`;
+}
+
+function byCatData(list,cats,cols){
+  return cats.map((cat,i)=>({
+    cat,color:cols[i%cols.length],
+    amount:list.filter(e=>e.cat===cat).reduce((s,e)=>s+e.amount,0)
+  })).filter(d=>d.amount>0).sort((a,b)=>b.amount-a.amount);
+}
+
+// ── Views ──────────────────────────────────────────────────
+const views={
+  dashboard(){
+    const m=state.filterMonth;
+    const fExp=state.expenses.filter(e=>!m||e.date.startsWith(m));
+    const fInc=state.incomes.filter(e=>!m||e.date.startsWith(m));
+    const tE=fExp.reduce((s,e)=>s+e.amount,0);
+    const tI=fInc.reduce((s,e)=>s+e.amount,0);
+    const bal=tI-tE;
+    const allMonths=[...new Set([...state.expenses,...state.incomes].map(e=>e.date.slice(0,7)))].sort().reverse();
+    const expByCat=byCatData(fExp,state.expCats,ECOLS);
+    const incByCat=byCatData(fInc,state.incCats,ICOLS);
+    const monoCount=state.expenses.filter(e=>e.fromMono&&(!m||e.date.startsWith(m))).length;
+    const monthOpts=allMonths.map(mm=>`<option value="${mm}"${mm===m?"selected":""}>${mm}</option>`).join("");
+    const legendRow=d=>d.map(x=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:2px;background:${x.color};display:inline-block"></span><span style="font-size:12px">${x.cat}</span></span>
+      <span style="font-size:12px;font-weight:500">₴${fmt(x.amount)}</span></div>`).join("");
+    return`
+    <select onchange="state.filterMonth=this.value;render()" style="margin-bottom:14px">
+      <option value="">Всі місяці</option>${monthOpts}
+    </select>
+    ${monoCount>0?`<div style="font-size:12px;color:var(--orange);margin-bottom:10px">🔶 ${monoCount} транзакцій з Monobank</div>`:""}
+    <div class="stats">
+      <div class="stat"><div class="stat-label">Доходи</div><div class="stat-val" style="color:var(--green)">₴${fmt(tI)}</div></div>
+      <div class="stat"><div class="stat-label">Витрати</div><div class="stat-val" style="color:var(--purple)">₴${fmt(tE)}</div></div>
+      <div class="stat"><div class="stat-label">Баланс</div><div class="stat-val" style="color:${bal>=0?"var(--green)":"var(--red)"}">${bal>=0?"+":""}₴${fmt(bal)}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div class="card"><div class="sec" style="margin-top:0">Доходи</div>${pieChartSVG(incByCat)}<div style="margin-top:10px">${legendRow(incByCat)}</div></div>
+      <div class="card"><div class="sec" style="margin-top:0">Витрати</div>${pieChartSVG(expByCat)}<div style="margin-top:10px">${legendRow(expByCat)}</div></div>
+    </div>
+    ${(state.expenses.length||state.incomes.length)?`<div class="card">
+      <div class="sec" style="margin-top:0">По днях (14 днів)</div>
+      <div class="legend"><div class="leg"><span style="background:var(--green)"></span>Доходи</div><div class="leg"><span style="background:var(--purple)"></span>Витрати</div></div>
+      ${barChartSVG(fExp,fInc)}</div>`:""}`;
+  },
+
+  sync(){
+    const accOpts=state.monoAccounts.map(a=>`<option value="${a.id}"${a.id===state.monoAccount?"selected":""}>${a.label}</option>`).join("");
+    const lastSync=state.monoLastSync>0?new Date(state.monoLastSync*1000).toLocaleString("uk-UA"):"ніколи";
+    const statusHtml=state.syncMsg?`<div class="sync-status ${state.syncStatus}">${state.syncMsg}</div>`:"";
+    return`
+    <div class="sync-bar">
+      <h3>🔶 Monobank синхронізація</h3>
+      <div class="sync-info">
+        Щоб отримати токен:<br>
+        Monobank → Налаштування → Other → API → скопіюй токен
+      </div>
+      <div style="display:grid;gap:10px">
+        <div>
+          <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Токен</label>
+          <input type="password" placeholder="u…" value="${state.monoToken}" oninput="state.monoToken=this.value"/>
+        </div>
+        <button class="submit" style="background:var(--bg3);color:var(--text);border:1px solid var(--border)" onclick="loadAccounts()">Завантажити рахунки</button>
+        ${state.monoAccounts.length?`<div>
+          <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Рахунок</label>
+          <select onchange="state.monoAccount=this.value;save()"><option value="">— обери —</option>${accOpts}</select>
+        </div>
+        <button class="submit" style="background:var(--orange)" onclick="syncMono()">⬇ Синхронізувати витрати</button>
+        <div style="font-size:12px;color:var(--text2)">Остання синхронізація: ${lastSync}</div>`:""}
+        ${statusHtml}
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec" style="margin-top:0">Як це працює</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">
+        • Завантажуються тільки <b style="color:var(--text)">витрати</b> (від'ємні операції)<br>
+        • Категорії визначаються автоматично за MCC-кодом магазину<br>
+        • Доходи ти додаєш вручну<br>
+        • Дублікати не додаються при повторній синхронізації<br>
+        • Токен зберігається лише на твоєму пристрої
+      </div>
+    </div>`;
+  },
+
+  add(){
+    const t=state.addType,cats=t==="income"?state.incCats:state.expCats,f=state.form;
+    const catOpts=cats.map(c=>`<option value="${c}"${c===f.cat?"selected":""}>${c}</option>`).join("");
+    return`
+    <div class="toggle">
+      <button class="inc${t==="income"?" active":""}" onclick="state.addType='income';state.form.cat='';render()">💰 Дохід</button>
+      <button class="exp${t==="expense"?" active":""}" onclick="state.addType='expense';state.form.cat='';render()">💸 Витрата</button>
+    </div>
+    <div style="display:grid;gap:10px">
+      <div><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Сума (₴) *</label>
+        <input type="number" inputmode="decimal" placeholder="0.00" value="${f.amount}" oninput="state.form.amount=this.value"/></div>
+      <div><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">${t==="income"?"Джерело":"Категорія"} *</label>
+        <select onchange="state.form.cat=this.value"><option value="">— обери —</option>${catOpts}</select></div>
+      <div><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Опис</label>
+        <input placeholder="${t==="income"?"Наприклад: аванс, проєкт...":"Наприклад: кава, таксі..."}" value="${f.desc}" oninput="state.form.desc=this.value"/></div>
+      <div><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Дата *</label>
+        <input type="date" value="${f.date}" onchange="state.form.date=this.value"/></div>
+      <button class="submit ${t}" onclick="addEntry()">Додати ${t==="income"?"дохід":"витрату"}</button>
+    </div>`;
+  },
+
+  history(){
+    const ht=state.histType,m=state.filterMonth,fc=state.filterCat;
+    const allMonths=[...new Set([...state.expenses,...state.incomes].map(e=>e.date.slice(0,7)))].sort().reverse();
+    const allCats=[...new Set([...state.expCats,...state.incCats])];
+    const list=[
+      ...(ht!=="income"?state.expenses.map(e=>({...e,_t:"expense"})):[]),
+      ...(ht!=="expense"?state.incomes.map(e=>({...e,_t:"income"})):[]),
+    ].filter(e=>(!m||e.date.startsWith(m))&&(fc==="Всі"||e.cat===fc))
+     .sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+    const monthOpts=allMonths.map(mm=>`<option value="${mm}"${mm===m?"selected":""}>${mm}</option>`).join("");
+    const catOpts=["Всі",...allCats].map(c=>`<option value="${c}"${c===fc?"selected":""}>${c}</option>`).join("");
+    const rows=list.map(e=>{
+      const isI=e._t==="income";
+      const cats=isI?state.incCats:state.expCats,cols=isI?ICOLS:ECOLS;
+      const ci=cats.indexOf(e.cat),col=cols[ci>=0?ci%cols.length:cols.length-1];
+      const monoTag=e.fromMono?`<span class="mono-tag">mono</span>`:"";
+      return`<div class="entry">
+        <span class="dot" style="background:${col}"></span>
+        <div class="entry-info">
+          <div class="entry-name">${e.desc||e.cat}${monoTag}</div>
+          <div class="entry-sub">${e.cat} · ${e.date}</div>
+        </div>
+        <span class="entry-amt" style="color:${isI?"var(--green)":"var(--purple)"}">${isI?"+":"-"}₴${fmt(e.amount)}</span>
+        <button class="del-btn" onclick="delEntry('${e.id}','${e._t}')">×</button>
+      </div>`;
+    }).join("")||`<div class="empty">Немає записів</div>`;
+    return`<div class="filters">
+      <select onchange="state.histType=this.value;state.filterCat='Всі';render()">
+        <option value="all"${ht==="all"?" selected":""}>Всі</option>
+        <option value="income"${ht==="income"?" selected":""}>Доходи</option>
+        <option value="expense"${ht==="expense"?" selected":""}>Витрати</option>
+      </select>
+      <select onchange="state.filterMonth=this.value;render()"><option value="">Всі місяці</option>${monthOpts}</select>
+    </div>${rows}`;
+  },
+
+  categories(){
+    const sections=[
+      {label:"💰 Джерела доходів",t:"income",cats:state.incCats,cols:ICOLS},
+      {label:"💸 Категорії витрат",t:"expense",cats:state.expCats,cols:ECOLS},
+    ];
+    return sections.map(({label,t,cats,cols})=>`
+    <div class="card">
+      <div style="font-weight:600;font-size:15px;margin-bottom:12px">${label}</div>
+      <div class="chips">${cats.map((c,i)=>`<div class="chip">
+        <span class="cdot" style="background:${cols[i%cols.length]}"></span>
+        <span>${c}</span>
+        <button class="cx" onclick="delCat('${c}','${t}')">×</button>
+      </div>`).join("")}</div>
+      <div class="add-row">
+        <input id="nc-${t}" placeholder="Нова ${t==="income"?"джерело":"категорія"}..." onkeydown="if(event.key==='Enter')addCat('${t}')"/>
+        <button onclick="addCat('${t}')">+</button>
+      </div>
+    </div>`).join("");
+  }
+};
+
+function render(){
+  document.getElementById("app").innerHTML=views[state.tab]?views[state.tab]():"";
+  ["dashboard","add","history","categories"].forEach(t=>{
+    const b=document.getElementById("nav-"+t);
+    if(b)b.classList.toggle("active",state.tab===t);
+  });
+}
+function setTab(t){state.tab=t;render();}
+
+// ── Actions ────────────────────────────────────────────────
+function addEntry(){
+  const f=state.form,t=state.addType;
+  const amt=parseFloat(f.amount);
+  if(!f.amount||!f.cat||!f.date||isNaN(amt)||amt<=0){toast("Заповни всі поля ✏️");return;}
+  const entry={id:Date.now(),amount:amt,desc:f.desc,cat:f.cat,date:f.date};
+  if(t==="expense")state.expenses.unshift(entry);
+  else state.incomes.unshift(entry);
+  state.form={amount:"",desc:"",cat:"",date:todayStr()};
+  save();render();
+  toast(t==="income"?"Дохід додано 💰":"Витрату додано 💸");
+}
+function delEntry(id,t){
+  const sid=isNaN(id)?id:+id;
+  if(t==="expense")state.expenses=state.expenses.filter(e=>e.id!==sid&&e.id!==id);
+  else state.incomes=state.incomes.filter(e=>e.id!==sid&&e.id!==id);
+  save();render();
+}
+function addCat(t){
+  const el=document.getElementById("nc-"+t);
+  const c=el?.value.trim();if(!c)return;
+  if(t==="expense"&&!state.expCats.includes(c))state.expCats.push(c);
+  if(t==="income"&&!state.incCats.includes(c))state.incCats.push(c);
+  save();render();
+}
+function delCat(c,t){
+  if(t==="expense"){state.expCats=state.expCats.filter(x=>x!==c);state.expenses=state.expenses.map(e=>e.cat===c?{...e,cat:"Інше"}:e);}
+  else{state.incCats=state.incCats.filter(x=>x!==c);state.incomes=state.incomes.map(e=>e.cat===c?{...e,cat:"Інше"}:e);}
+  save();render();
+}
+function toast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2200);
+}
+
+// ── PWA ────────────────────────────────────────────────────
+const manifest={name:"Мої фінанси",short_name:"Фінанси",start_url:".",display:"standalone",background_color:"#0f0f1a",theme_color:"#1a1a2e",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a2e'/><text y='.9em' font-size='72' x='12'>💸</text></svg>",sizes:"any",type:"image/svg+xml"}]};
+const blob=new Blob([JSON.stringify(manifest)],{type:"application/json"});
+document.getElementById("manifestLink").href=URL.createObjectURL(blob);
+if("serviceWorker"in navigator){
+  const sw=`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>clients.claim());self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).catch(()=>new Response(''))));`;
+  navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:"application/javascript"}))).catch(()=>{});
+}
+
+load();render();
+</script>
+</body>
+</html>
