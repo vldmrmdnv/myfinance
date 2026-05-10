@@ -210,7 +210,13 @@ onAuthStateChanged(auth,(user)=>{
 });
 
 // ── Mono ───────────────────────────────────────────────────
-window.loadAccounts=async()=>{
+window.saveToken=()=>{
+  const inp=document.getElementById("mono-token-inp");
+  if(!inp||!inp.value.trim()){toast("Введи токен");return;}
+  state.monoToken=inp.value.trim();
+  if(uid)localStorage.setItem("mono_"+uid,state.monoToken);
+  toast("✅ Токен збережено");
+};
   const inp=document.getElementById("mono-token-inp");
   if(inp)state.monoToken=inp.value.trim();
   if(!state.monoToken){toast("Введи токен");return;}
@@ -350,7 +356,8 @@ const views={
       <div style="font-weight:600;font-size:15px;margin-bottom:10px">🔶 Monobank</div>
       <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.6">Токен → <b style="color:var(--text)">api.monobank.ua</b><br>Зберігається тільки локально на цьому пристрої</div>
       <div style="display:grid;gap:10px">
-        <input id="mono-token-inp" type="password" placeholder="Токен Monobank" value="${state.monoToken}" oninput="state.monoToken=this.value"/>
+        <input id="mono-token-inp" type="text" placeholder="Токен Monobank" value="${state.monoToken}"/>
+        <button style="padding:10px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;font-weight:500" onclick="saveToken()">💾 Зберегти токен</button>
         <button style="padding:10px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;font-weight:500" onclick="loadAccounts()">Завантажити рахунки</button>
         ${state.monoAccounts.length?`<select onchange="state.monoAccount=this.value"><option value="">— обери рахунок —</option>${accOpts}</select>
         <button style="padding:10px;background:var(--orange);color:#fff;border-radius:8px;font-weight:600" onclick="syncMono()">⬇ Синхронізувати витрати</button>
