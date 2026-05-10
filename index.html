@@ -141,23 +141,50 @@ const ICOLS = ["#1D9E75","#378ADD","#639922","#7F77DD","#3B6D11","#0C447C","#D45
 // ── State ──────────────────────────────────────────────────
 let uid = null, unsub = null, authMode = "login";
 const DEF_ECATS = ["Їжа","Транспорт","Розваги","Здоров'я","Одяг","Комунальні","Техніка","Онлайн","Інше"];
-const DEF_ICATS = ["Зарплата","Фріланс","Подарунок","Інвестиції","Інше"];
+const DEF_ICATS = ["Дохід","Зарплата","Фріланс","Подарунок","Інвестиції","Інше"];
 
 let S = {
   expenses:[], incomes:[],
-  expCats:[...DEF_ECATS], incCats:[...DEF_ICATS],
-  tab:"dashboard", addType:"expense",
+  expCats:expenseCats(), incCats:incomeCats(),
+  tab:"dashboard", addType:"income",
   filterMonth:"", histType:"all",
   form:{amount:"",desc:"",cat:"",date:today()},
   monoToken:"", monoAccount:"", monoLastSync:0, monoAccounts:[],
   syncStatus:"", syncMsg:""
 };
+window.S = S;
 
 function today(){ return new Date().toISOString().slice(0,10); }
 function fmt(n){ return (+n).toLocaleString("uk-UA",{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function monoKey(){ return uid ? "mono_"+uid : null; }
 function loadMonoToken(){ S.monoToken = (monoKey() && localStorage.getItem(monoKey())) || ""; }
 function persistMonoToken(){ if(monoKey()) localStorage.setItem(monoKey(), S.monoToken); }
+function cleanCats(list, fallback, required=""){
+  const source = Array.isArray(list) && list.length ? list : fallback;
+  const cleaned = [...new Set(source.map(c=>String(c).trim()).filter(Boolean))];
+  return required && !cleaned.includes(required) ? [required, ...cleaned] : cleaned;
+}
+function expenseCats(list){ return cleanCats(list, DEF_ECATS); }
+function incomeCats(list){ return cleanCats(list, DEF_ICATS, "Дохід"); }
+function catsFor(type){ return type==="income" ? S.incCats : S.expCats; }
+function ensureFormCat(type=S.addType){
+  const cats = catsFor(type);
+  if(!S.form.cat || !cats.includes(S.form.cat)) S.form.cat = cats[0] || "";
+}
+function readMonoAccountFromDom(){
+  const account = document.getElementById("mono-account")?.value;
+  if(account !== undefined) S.monoAccount = account;
+}
+function readFormFromDom(){
+  const amount = document.getElementById("add-amount")?.value;
+  const cat = document.getElementById("add-cat")?.value;
+  const desc = document.getElementById("add-desc")?.value;
+  const date = document.getElementById("add-date")?.value;
+  if(amount !== undefined) S.form.amount = amount;
+  if(cat !== undefined) S.form.cat = cat;
+  if(desc !== undefined) S.form.desc = desc;
+  if(date !== undefined) S.form.date = date;
+}
 
 // ── Firestore ──────────────────────────────────────────────
 async function cloud(data){
@@ -174,13 +201,14 @@ function snapshot(){
       const d = snap.data();
       S.expenses    = d.expenses    || [];
       S.incomes     = d.incomes     || [];
-      S.expCats     = Array.isArray(d.expCats) && d.expCats.length ? d.expCats : [...DEF_ECATS];
-      S.incCats     = Array.isArray(d.incCats) && d.incCats.length ? d.incCats : [...DEF_ICATS];
+      S.expCats     = expenseCats(d.expCats);
+      S.incCats     = incomeCats(d.incCats);
       S.monoAccount = d.monoAccount || "";
       S.monoLastSync= d.monoLastSync|| 0;
       S.monoAccounts= d.monoAccounts|| [];
       loadMonoToken();
     }
+    if(S.tab==="add") ensureFormCat(S.addType);
     render();
   }, e => { console.error("Firestore read:", e); toast("Помилка читання даних"); });
 }
@@ -227,8 +255,9 @@ window.logout = async () => {
   if(unsub){ unsub(); unsub=null; }
   await signOut(auth);
   uid = null;
-  S = {...S, expenses:[], incomes:[], expCats:[...DEF_ECATS], incCats:[...DEF_ICATS],
-    tab:"dashboard", monoToken:"", monoAccount:"", monoLastSync:0, monoAccounts:[], syncStatus:"", syncMsg:""};
+  S = {...S, expenses:[], incomes:[], expCats:expenseCats(), incCats:incomeCats(),
+    tab:"dashboard", addType:"income", form:{amount:"",desc:"",cat:"",date:today()}, monoToken:"", monoAccount:"", monoLastSync:0, monoAccounts:[], syncStatus:"", syncMsg:""};
+  window.S = S;
   render();
 };
 
@@ -266,13 +295,14 @@ window.loadAccounts = async () => {
       id:a.id,
       label:`${a.type==="black"?"⚫ Чорна":"💳 "+a.type} — ₴${fmt(a.balance/100)} (${a.currencyCode===980?"UAH":a.currencyCode})`
     }));
-    if(!S.monoAccount && S.monoAccounts.length) S.monoAccount = S.monoAccounts[0].id;
+    if(S.monoAccounts.length && !S.monoAccounts.some(a=>a.id===S.monoAccount)) S.monoAccount = S.monoAccounts[0].id;
     await cloudSave();
     S.syncStatus="ok"; S.syncMsg="✅ Рахунки завантажено"; render();
   } catch(e){ S.syncStatus="err"; S.syncMsg="❌ "+e.message; render(); }
 };
 
 window.syncMono = async () => {
+  readMonoAccountFromDom();
   if(!S.monoToken){ toast("Введи та збережи токен"); return; }
   if(!S.monoAccount){ toast("Обери рахунок"); return; }
   S.syncStatus="loading"; S.syncMsg="Синхронізація..."; render();
@@ -283,6 +313,7 @@ window.syncMono = async () => {
     if(r.status===429) throw new Error("Забагато запитів — зачекай 60 секунд");
     if(!r.ok) throw new Error("Помилка API ("+r.status+")");
     const txs = await r.json();
+    if(!Array.isArray(txs)) throw new Error("Monobank повернув не список транзакцій");
     let added = 0;
     txs.forEach(tx => {
       if(tx.amount >= 0) return;
@@ -404,7 +435,7 @@ const views = {
         <button style="padding:10px;background:var(--purple);color:#fff;border-radius:8px;font-weight:500" onclick="saveMonoToken()">💾 Зберегти токен</button>
         <button style="padding:10px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;font-weight:500" onclick="loadAccounts()">📋 Завантажити рахунки</button>
         ${S.monoAccounts.length?`
-        <select onchange="S.monoAccount=this.value"><option value="">— обери рахунок —</option>${accOpts}</select>
+        <select id="mono-account" onchange="S.monoAccount=this.value"><option value="">— обери рахунок —</option>${accOpts}</select>
         <button style="padding:10px;background:var(--orange);color:#fff;border-radius:8px;font-weight:600" onclick="syncMono()">⬇ Синхронізувати витрати</button>
         <div style="font-size:12px;color:var(--text2)">Остання синхронізація: ${ls}</div>`:""}
         ${st}
@@ -418,18 +449,20 @@ const views = {
   },
 
   add(){
-    const t=S.addType, cats=t==="income"?S.incCats:S.expCats, f=S.form;
+    const t=S.addType;
+    ensureFormCat(t);
+    const cats=catsFor(t), f=S.form;
     return`
     <div class="toggle">
-      <button class="inc${t==="income"?" active":""}" onclick="S.addType='income';S.form.cat=S.incCats[0]||'';render()">💰 Дохід</button>
-      <button class="exp${t==="expense"?" active":""}" onclick="S.addType='expense';S.form.cat=S.expCats[0]||'';render()">💸 Витрата</button>
+      <button class="inc${t==="income"?" active":""}" onclick="setAddType('income')">💰 Дохід</button>
+      <button class="exp${t==="expense"?" active":""}" onclick="setAddType('expense')">💸 Витрата</button>
     </div>
     <div style="display:grid;gap:12px">
-      <div><label class="lbl">Сума (₴) *</label><input type="number" inputmode="decimal" placeholder="0.00" value="${f.amount}" oninput="S.form.amount=this.value"/></div>
+      <div><label class="lbl">Сума (₴) *</label><input id="add-amount" type="number" inputmode="decimal" placeholder="0.00" value="${f.amount}" oninput="S.form.amount=this.value"/></div>
       <div><label class="lbl">${t==="income"?"Джерело":"Категорія"} *</label>
-        <select onchange="S.form.cat=this.value"><option value="">— обери —</option>${cats.map(c=>`<option value="${c}"${c===f.cat?"selected":""}>${c}</option>`).join("")}</select></div>
-      <div><label class="lbl">Опис</label><input placeholder="${t==="income"?"Аванс, проєкт...":"Кава, таксі..."}" value="${f.desc}" oninput="S.form.desc=this.value"/></div>
-      <div><label class="lbl">Дата *</label><input type="date" value="${f.date}" onchange="S.form.date=this.value"/></div>
+        <select id="add-cat" onchange="S.form.cat=this.value"><option value="">— обери —</option>${cats.map(c=>`<option value="${c}"${c===f.cat?"selected":""}>${c}</option>`).join("")}</select></div>
+      <div><label class="lbl">Опис</label><input id="add-desc" placeholder="${t==="income"?"Аванс, проєкт...":"Кава, таксі..."}" value="${f.desc}" oninput="S.form.desc=this.value"/></div>
+      <div><label class="lbl">Дата *</label><input id="add-date" type="date" value="${f.date}" onchange="S.form.date=this.value"/></div>
       <button class="submit ${t==="income"?"inc":"exp"}" onclick="addEntry()">Додати ${t==="income"?"дохід":"витрату"}</button>
     </div>`;
   },
@@ -496,20 +529,26 @@ window.render = () => {
 
 window.setTab = t => {
   S.tab=t;
-  if(t==='add' && !S.form.cat){
-    const cats = S.addType==='income' ? S.incCats : S.expCats;
-    S.form.cat = cats[0] || '';
-  }
+  if(t==="add") ensureFormCat(S.addType);
+  render();
+};
+
+window.setAddType = t => {
+  S.addType = t;
+  ensureFormCat(t);
   render();
 };
 
 // ── Actions ────────────────────────────────────────────────
 window.addEntry = async () => {
-  const f=S.form, t=S.addType, amt=parseFloat(f.amount);
+  readFormFromDom();
+  const t=S.addType;
+  ensureFormCat(t);
+  const f=S.form, amt=parseFloat(f.amount);
   if(!f.amount||!f.cat||!f.date||isNaN(amt)||amt<=0){ toast("Заповни всі поля ✏️"); return; }
   const entry={id:Date.now(),amount:amt,desc:f.desc.trim(),cat:f.cat,date:f.date};
   if(t==="expense") S.expenses.unshift(entry); else S.incomes.unshift(entry);
-  S.form={amount:"",desc:"",cat:"",date:today()};
+  S.form={amount:"",desc:"",cat:catsFor(t)[0]||"",date:today()};
   await cloudSave(); render();
   toast(t==="income"?"Дохід додано 💰":"Витрату додано 💸");
 };
@@ -537,10 +576,7 @@ window.delCat = async (c, t) => {
     S.incCats=S.incCats.filter(x=>x!==c);
     S.incomes=S.incomes.map(e=>e.cat===c?{...e,cat:S.incCats[0]||"Інше"}:e);
   }
-  if(S.tab==='add' && !S.form.cat){
-    const cats = S.addType==='income' ? S.incCats : S.expCats;
-    S.form.cat = cats[0] || '';
-  }
+  if(S.tab==="add") ensureFormCat(S.addType);
   await cloudSave(); render();
 };
 
@@ -557,6 +593,7 @@ if("serviceWorker" in navigator){
   const sw=`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>clients.claim());self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));});`;
   navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:"application/javascript"}))).catch(()=>{});
 }
+render();
 </script>
 </body>
 </html>
