@@ -420,7 +420,7 @@ const views = {
     const t=S.addType, cats=t==="income"?S.incCats:S.expCats, f=S.form;
     return`
     <div class="toggle">
-      <button class="inc${t==="income"?" active":""}" onclick="S.addType='income';S.form.cat='';render()">💰 Дохід</button>
+      <button class="submit ${t==="income"?"inc":"exp"}" onclick="addEntry()">Додати ${t==="income"?"дохід":"витрату"}</button>
       <button class="exp${t==="expense"?" active":""}" onclick="S.addType='expense';S.form.cat='';render()">💸 Витрата</button>
     </div>
     <div style="display:grid;gap:12px">
