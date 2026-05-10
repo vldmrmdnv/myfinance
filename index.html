@@ -17,52 +17,65 @@
   --green:#1D9E75;--purple:#7F77DD;--red:#E24B4A;--orange:#D85A30;
   --radius:12px;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 }
-body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;min-height:100vh;padding-bottom:80px}
-input,select{background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:15px;font-family:var(--font);padding:10px 12px;width:100%;outline:none}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;min-height:100vh;padding-bottom:90px}
+input,select{background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:15px;font-family:var(--font);padding:10px 12px;width:100%;outline:none;-webkit-appearance:none}
 input:focus,select:focus{border-color:var(--purple)}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239090b0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
 select option{background:var(--bg2)}
-button{cursor:pointer;font-family:var(--font);font-size:14px;border:none;border-radius:8px;transition:opacity .15s}
+button{cursor:pointer;font-family:var(--font);font-size:14px;border:none;border-radius:8px;transition:opacity .15s;-webkit-tap-highlight-color:transparent}
 button:active{opacity:.7}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:none;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+/* Nav */
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:none;z-index:100;padding-bottom:env(safe-area-inset-bottom,0px)}
 nav button{flex:1;background:none;color:var(--text2);padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;border-radius:0}
 nav button.active{color:var(--purple)}
-nav button svg{width:22px;height:22px}
-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 16px 12px;position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center}
+nav button svg{width:22px;height:22px;flex-shrink:0}
+/* Header */
+header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top,0px));position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center}
 header h1{font-size:19px;font-weight:600}
 .wrap{max-width:600px;margin:0 auto;padding:16px}
+/* Toggle */
 .toggle{display:flex;gap:8px;margin-bottom:18px}
 .toggle button{flex:1;padding:10px;font-weight:500;font-size:14px;border:1px solid var(--border);background:var(--bg3);color:var(--text2)}
 .toggle button.inc.active{background:var(--green);color:#fff;border-color:var(--green)}
 .toggle button.exp.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+/* Stats */
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
 .stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 10px}
 .stat-label{font-size:11px;color:var(--text2);margin-bottom:4px}
-.stat-val{font-size:16px;font-weight:600}
-.entry{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;margin-bottom:8px;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.stat-val{font-size:16px;font-weight:600;word-break:break-all}
+/* Entry */
+.entry{display:flex;align-items:center;padding:12px 14px;margin-bottom:8px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;gap:0}
 .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-right:10px}
 .entry-info{flex:1;min-width:0}
 .entry-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .entry-sub{font-size:11px;color:var(--text2);margin-top:2px}
-.entry-amt{font-weight:600;font-size:15px;margin-right:10px;white-space:nowrap}
-.del-btn{background:none;border:none;color:var(--text2);font-size:20px;padding:0;line-height:1;flex-shrink:0}
+.entry-amt{font-weight:600;font-size:14px;margin:0 10px;white-space:nowrap;flex-shrink:0}
+.del-btn{background:none;border:none;color:var(--text2);font-size:22px;padding:0;line-height:1;flex-shrink:0;width:28px;text-align:center}
+/* Chips */
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .chip{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 10px;font-size:13px}
-.chip .cdot{width:7px;height:7px;border-radius:50%}
-.chip .cx{background:none;border:none;color:var(--text2);font-size:15px;padding:0;margin-left:2px}
+.chip .cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.chip .cx{background:none;border:none;color:var(--text2);font-size:16px;padding:0;margin-left:2px;line-height:1}
 .sec{font-size:12px;font-weight:600;color:var(--text2);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.5px}
+/* Add row */
 .add-row{display:flex;gap:8px}
 .add-row input{flex:1}
-.add-row button{padding:0 16px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:20px;border-radius:8px}
+.add-row button{padding:0 16px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:22px;border-radius:8px;flex-shrink:0}
+/* Submit */
 .submit{width:100%;padding:13px;font-size:15px;font-weight:600;margin-top:6px;color:#fff;border-radius:8px}
 .submit.inc{background:var(--green)}
 .submit.exp{background:var(--purple)}
 .submit.auth{background:var(--purple)}
-.filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.filters select{flex:1;min-width:120px}
+/* Filters */
+.filters{display:flex;gap:8px;margin-bottom:12px}
+.filters select{flex:1}
+/* Empty */
 .empty{text-align:center;color:var(--text2);padding:40px 20px;font-size:14px}
-#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#333;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;opacity:0;transition:all .3s;pointer-events:none;z-index:200}
+/* Toast */
+#toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:#333;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;opacity:0;transition:all .3s;pointer-events:none;z-index:300;white-space:nowrap}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Auth */
 .auth-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:14px;padding:24px}
 .auth-wrap h2{font-size:22px;font-weight:600}
 .auth-wrap p{color:var(--text2);font-size:13px;text-align:center;max-width:260px;line-height:1.6}
@@ -70,6 +83,10 @@ header h1{font-size:19px;font-weight:600}
 .auth-switch{font-size:13px;color:var(--text2);text-align:center}
 .auth-switch span{color:var(--purple);cursor:pointer;text-decoration:underline}
 .auth-error{color:var(--red);font-size:13px;text-align:center;min-height:18px}
+/* Label */
+.lbl{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
+/* Mono tag */
+.mono-tag{font-size:10px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1px 5px;color:var(--text2);margin-left:4px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -103,7 +120,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const firebaseConfig = {
+const FB = {
   apiKey: "AIzaSyCggCy1imSccIKlKo3JC6W8T8X7AuVdlqs",
   authDomain: "finances-88baf.firebaseapp.com",
   projectId: "finances-88baf",
@@ -111,258 +128,285 @@ const firebaseConfig = {
   messagingSenderId: "856298570201",
   appId: "1:856298570201:web:1e0e6634b0f9344a9fd9c8"
 };
+const fbApp = initializeApp(FB);
+const db = getFirestore(fbApp);
+const auth = getAuth(fbApp);
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+// ── MCC → Category ─────────────────────────────────────────
+const MCC = {5411:"Їжа",5412:"Їжа",5422:"Їжа",5441:"Їжа",5451:"Їжа",5462:"Їжа",5499:"Їжа",5812:"Їжа",5813:"Їжа",5814:"Їжа",5900:"Їжа",4111:"Транспорт",4112:"Транспорт",4121:"Транспорт",4131:"Транспорт",4411:"Транспорт",4511:"Транспорт",4784:"Транспорт",4789:"Транспорт",5541:"Транспорт",5542:"Транспорт",5571:"Транспорт",5599:"Транспорт",7511:"Транспорт",7512:"Транспорт",7513:"Транспорт",5047:"Здоров'я",5122:"Здоров'я",5912:"Здоров'я",8011:"Здоров'я",8021:"Здоров'я",8049:"Здоров'я",8062:"Здоров'я",8099:"Здоров'я",5735:"Розваги",5941:"Розваги",5945:"Розваги",7011:"Розваги",7012:"Розваги",7832:"Розваги",7922:"Розваги",7991:"Розваги",7993:"Розваги",7996:"Розваги",7999:"Розваги",5600:"Одяг",5611:"Одяг",5621:"Одяг",5631:"Одяг",5641:"Одяг",5651:"Одяг",5661:"Одяг",5691:"Одяг",5699:"Одяг",4900:"Комунальні",4911:"Комунальні",4924:"Комунальні",4941:"Комунальні",4961:"Комунальні",4974:"Комунальні",5045:"Техніка",5065:"Техніка",5734:"Техніка",5732:"Техніка",5999:"Онлайн",7372:"Онлайн",7374:"Онлайн"};
+const ECOLS = ["#7F77DD","#D85A30","#D4537E","#E24B4A","#BA7517","#888780","#378ADD","#639922","#1D9E75","#9B59B6"];
+const ICOLS = ["#1D9E75","#378ADD","#639922","#7F77DD","#3B6D11","#0C447C","#D4537E","#BA7517","#9B59B6"];
 
-// ── MCC ────────────────────────────────────────────────────
-const MCC_MAP={5411:"Їжа",5412:"Їжа",5422:"Їжа",5441:"Їжа",5451:"Їжа",5462:"Їжа",5499:"Їжа",5812:"Їжа",5813:"Їжа",5814:"Їжа",5900:"Їжа",4111:"Транспорт",4112:"Транспорт",4121:"Транспорт",4131:"Транспорт",4411:"Транспорт",4511:"Транспорт",4784:"Транспорт",4789:"Транспорт",5541:"Транспорт",5542:"Транспорт",5571:"Транспорт",5599:"Транспорт",7511:"Транспорт",7512:"Транспорт",7513:"Транспорт",5047:"Здоров'я",5122:"Здоров'я",5912:"Здоров'я",8011:"Здоров'я",8021:"Здоров'я",8049:"Здоров'я",8062:"Здоров'я",8099:"Здоров'я",5735:"Розваги",5941:"Розваги",5945:"Розваги",7011:"Розваги",7012:"Розваги",7832:"Розваги",7922:"Розваги",7991:"Розваги",7993:"Розваги",7996:"Розваги",7999:"Розваги",5600:"Одяг",5611:"Одяг",5621:"Одяг",5631:"Одяг",5641:"Одяг",5651:"Одяг",5661:"Одяг",5691:"Одяг",5699:"Одяг",4900:"Комунальні",4911:"Комунальні",4924:"Комунальні",4941:"Комунальні",4961:"Комунальні",4974:"Комунальні",5045:"Техніка",5065:"Техніка",5734:"Техніка",5732:"Техніка",5999:"Онлайн",7372:"Онлайн",7374:"Онлайн"};
-const ECOLS=["#7F77DD","#D85A30","#D4537E","#E24B4A","#BA7517","#888780","#378ADD","#639922","#1D9E75","#9B59B6"];
-const ICOLS=["#1D9E75","#378ADD","#639922","#7F77DD","#3B6D11","#0C447C","#D4537E","#BA7517","#1D9E75"];
+// ── State ──────────────────────────────────────────────────
+let uid = null, unsub = null, authMode = "login";
+const DEF_ECATS = ["Їжа","Транспорт","Розваги","Здоров'я","Одяг","Комунальні","Техніка","Онлайн","Інше"];
+const DEF_ICATS = ["Зарплата","Фріланс","Подарунок","Інвестиції","Інше"];
 
-let uid=null, unsub=null, authMode="login";
-
-let state={
-  expenses:[],incomes:[],
-  expCats:["Їжа","Транспорт","Розваги","Здоров'я","Одяг","Комунальні","Техніка","Онлайн","Інше"],
-  incCats:["Зарплата","Фріланс","Подарунок","Інвестиції","Інше"],
-  tab:"dashboard",addType:"expense",
-  filterMonth:"",filterCat:"Всі",histType:"all",
-  form:{amount:"",desc:"",cat:"",date:todayStr()},
-  monoToken:"",monoAccount:"",monoLastSync:0,monoAccounts:[],
-  syncStatus:"",syncMsg:""
+let S = {
+  expenses:[], incomes:[],
+  expCats:[...DEF_ECATS], incCats:[...DEF_ICATS],
+  tab:"dashboard", addType:"expense",
+  filterMonth:"", histType:"all",
+  form:{amount:"",desc:"",cat:"",date:today()},
+  monoToken:"", monoAccount:"", monoLastSync:0, monoAccounts:[],
+  syncStatus:"", syncMsg:""
 };
 
-function todayStr(){return new Date().toISOString().slice(0,10);}
-function fmt(n){return (+n).toLocaleString("uk-UA",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function today(){ return new Date().toISOString().slice(0,10); }
+function fmt(n){ return (+n).toLocaleString("uk-UA",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function monoKey(){ return uid ? "mono_"+uid : null; }
+function loadMonoToken(){ S.monoToken = (monoKey() && localStorage.getItem(monoKey())) || ""; }
+function persistMonoToken(){ if(monoKey()) localStorage.setItem(monoKey(), S.monoToken); }
 
-// ── Firebase ───────────────────────────────────────────────
-async function saveToCloud(){
-  if(!uid)return;
-  await setDoc(doc(db,"users",uid),{
-    expenses:state.expenses,incomes:state.incomes,
-    expCats:state.expCats,incCats:state.incCats,
-    monoAccount:state.monoAccount,monoLastSync:state.monoLastSync,
-    monoAccounts:state.monoAccounts,updatedAt:Date.now()
-  });
+// ── Firestore ──────────────────────────────────────────────
+async function cloud(data){
+  if(!uid) return;
+  try {
+    await setDoc(doc(db,"users",uid), {...data, updatedAt:Date.now()});
+  } catch(e){ console.error("Firestore write:", e); toast("Помилка збереження: "+e.message); }
 }
 
-function subscribeToCloud(){
-  if(unsub)unsub();
-  unsub=onSnapshot(doc(db,"users",uid),(snap)=>{
+function snapshot(){
+  if(unsub) unsub();
+  unsub = onSnapshot(doc(db,"users",uid), snap => {
     if(snap.exists()){
-      const d=snap.data();
-      state.expenses=d.expenses||[];
-      state.incomes=d.incomes||[];
-      state.expCats=d.expCats||state.expCats;
-      state.incCats=d.incCats||state.incCats;
-      state.monoAccount=d.monoAccount||"";
-      state.monoLastSync=d.monoLastSync||0;
-      state.monoAccounts=d.monoAccounts||[];
-      state.monoToken=localStorage.getItem("mono_"+uid)||"";
+      const d = snap.data();
+      S.expenses    = d.expenses    || [];
+      S.incomes     = d.incomes     || [];
+      S.expCats     = d.expCats     || [...DEF_ECATS];
+      S.incCats     = d.incCats     || [...DEF_ICATS];
+      S.monoAccount = d.monoAccount || "";
+      S.monoLastSync= d.monoLastSync|| 0;
+      S.monoAccounts= d.monoAccounts|| [];
+      loadMonoToken();
     }
     render();
+  }, e => { console.error("Firestore read:", e); toast("Помилка читання даних"); });
+}
+
+function cloudSave(){
+  return cloud({
+    expenses:S.expenses, incomes:S.incomes,
+    expCats:S.expCats, incCats:S.incCats,
+    monoAccount:S.monoAccount, monoLastSync:S.monoLastSync,
+    monoAccounts:S.monoAccounts
   });
 }
 
 // ── Auth ───────────────────────────────────────────────────
-window.doAuth=async()=>{
-  const email=document.getElementById("auth-email")?.value.trim();
-  const pass=document.getElementById("auth-pass")?.value;
-  const errEl=document.getElementById("auth-err");
-  if(!email||!pass){if(errEl)errEl.textContent="Заповни всі поля";return;}
-  try{
-    if(authMode==="register"){
-      await createUserWithEmailAndPassword(auth,email,pass);
-    } else {
-      await signInWithEmailAndPassword(auth,email,pass);
-    }
-  }catch(e){
-    const msgs={"auth/email-already-in-use":"Email вже використовується","auth/invalid-email":"Невірний email","auth/weak-password":"Пароль мінімум 6 символів","auth/invalid-credential":"Невірний email або пароль","auth/user-not-found":"Користувача не знайдено","auth/wrong-password":"Невірний пароль"};
-    if(errEl)errEl.textContent=msgs[e.code]||e.message;
+const AUTH_ERRORS = {
+  "auth/email-already-in-use":"Email вже використовується",
+  "auth/invalid-email":"Невірний формат email",
+  "auth/weak-password":"Пароль мінімум 6 символів",
+  "auth/invalid-credential":"Невірний email або пароль",
+  "auth/user-not-found":"Користувача не знайдено",
+  "auth/wrong-password":"Невірний пароль",
+  "auth/too-many-requests":"Забагато спроб — спробуй пізніше"
+};
+
+window.doAuth = async () => {
+  const email = document.getElementById("auth-email")?.value.trim();
+  const pass  = document.getElementById("auth-pass")?.value;
+  const errEl = document.getElementById("auth-err");
+  if(!email || !pass){ if(errEl) errEl.textContent="Заповни всі поля"; return; }
+  if(errEl) errEl.textContent="";
+  try {
+    if(authMode === "register")
+      await createUserWithEmailAndPassword(auth, email, pass);
+    else
+      await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e){
+    if(errEl) errEl.textContent = AUTH_ERRORS[e.code] || e.message;
   }
 };
 
-window.toggleAuthMode=()=>{
-  authMode=authMode==="login"?"register":"login";
-  render();
-};
+window.toggleAuthMode = () => { authMode = authMode==="login"?"register":"login"; render(); };
 
-window.logout=async()=>{
-  if(unsub)unsub();
+window.logout = async () => {
+  if(unsub){ unsub(); unsub=null; }
   await signOut(auth);
-  uid=null;
-  state={...state,expenses:[],incomes:[],tab:"dashboard",monoToken:"",monoAccount:"",monoLastSync:0,monoAccounts:[]};
+  uid = null;
+  S = {...S, expenses:[], incomes:[], expCats:[...DEF_ECATS], incCats:[...DEF_ICATS],
+    tab:"dashboard", monoToken:"", monoAccount:"", monoLastSync:0, monoAccounts:[], syncStatus:"", syncMsg:""};
   render();
 };
 
-onAuthStateChanged(auth,(user)=>{
+onAuthStateChanged(auth, user => {
   if(user){
-    uid=user.uid;
-    state.monoToken=localStorage.getItem("mono_"+uid)||"";
-    subscribeToCloud();
+    uid = user.uid;
+    loadMonoToken();
+    snapshot();
   } else {
-    uid=null;
-    if(unsub)unsub();
+    uid = null;
+    if(unsub){ unsub(); unsub=null; }
     render();
   }
 });
 
-// ── Mono ───────────────────────────────────────────────────
-window.saveToken=()=>{
-  const inp=document.getElementById("mono-token-inp");
-  if(!inp||!inp.value.trim()){toast("Введи токен");return;}
-  state.monoToken=inp.value.trim();
-  if(uid)localStorage.setItem("mono_"+uid,state.monoToken);
+// ── Monobank ───────────────────────────────────────────────
+window.saveMonoToken = () => {
+  const v = document.getElementById("mono-inp")?.value.trim();
+  if(!v){ toast("Введи токен"); return; }
+  S.monoToken = v;
+  persistMonoToken();
   toast("✅ Токен збережено");
 };
-  const inp=document.getElementById("mono-token-inp");
-  if(inp)state.monoToken=inp.value.trim();
-  if(!state.monoToken){toast("Введи токен");return;}
-  state.syncStatus="loading";state.syncMsg="Завантаження рахунків...";render();
-  try{
-    const r=await fetch("https://api.monobank.ua/personal/client-info",{headers:{"X-Token":state.monoToken}});
-    if(!r.ok)throw new Error("Невірний токен");
-    const info=await r.json();
-    state.monoAccounts=info.accounts.map(a=>({id:a.id,label:`${a.type==="black"?"⚫ Чорна":"💳 "+a.type} — ₴${fmt(a.balance/100)}`}));
-    if(!state.monoAccount&&state.monoAccounts.length)state.monoAccount=state.monoAccounts[0].id;
-    localStorage.setItem("mono_"+uid,state.monoToken);
-    await saveToCloud();
-    state.syncStatus="ok";state.syncMsg="✅ Рахунки завантажено";render();
-  }catch(e){state.syncStatus="err";state.syncMsg="❌ "+e.message;render();}
+
+window.loadAccounts = async () => {
+  const v = document.getElementById("mono-inp")?.value.trim();
+  if(v) { S.monoToken = v; persistMonoToken(); }
+  if(!S.monoToken){ toast("Спочатку збережи токен"); return; }
+  S.syncStatus="loading"; S.syncMsg="Завантаження рахунків..."; render();
+  try {
+    const r = await fetch("https://api.monobank.ua/personal/client-info", {headers:{"X-Token":S.monoToken}});
+    if(!r.ok) throw new Error("Невірний токен ("+r.status+")");
+    const info = await r.json();
+    S.monoAccounts = info.accounts.map(a=>({
+      id:a.id,
+      label:`${a.type==="black"?"⚫ Чорна":"💳 "+a.type} — ₴${fmt(a.balance/100)} (${a.currencyCode===980?"UAH":a.currencyCode})`
+    }));
+    if(!S.monoAccount && S.monoAccounts.length) S.monoAccount = S.monoAccounts[0].id;
+    await cloudSave();
+    S.syncStatus="ok"; S.syncMsg="✅ Рахунки завантажено"; render();
+  } catch(e){ S.syncStatus="err"; S.syncMsg="❌ "+e.message; render(); }
 };
 
-window.syncMono=async()=>{
-  const inp=document.getElementById("mono-token-inp");
-  if(inp)state.monoToken=inp.value.trim();
-  if(!state.monoToken){toast("Введи токен");return;}
-  if(!state.monoAccount){toast("Обери рахунок");return;}
-  state.syncStatus="loading";state.syncMsg="Завантаження...";render();
-  try{
-    const now=Math.floor(Date.now()/1000);
-    const r=await fetch(`https://api.monobank.ua/personal/statement/${state.monoAccount}/${now-30*24*3600}/${now}`,{headers:{"X-Token":state.monoToken}});
-    if(r.status===429)throw new Error("Забагато запитів — зачекай хвилину");
-    if(!r.ok)throw new Error("Помилка API");
-    const txs=await r.json();
-    let added=0;
-    txs.forEach(tx=>{
-      if(tx.amount>=0)return;
-      const id="mono_"+tx.id;
-      if(state.expenses.find(e=>e.id===id))return;
-      const cat=MCC_MAP[tx.mcc]||"Інше";
-      if(!state.expCats.includes(cat))state.expCats.push(cat);
-      state.expenses.unshift({id,amount:Math.abs(tx.amount)/100,desc:tx.description||cat,cat,date:new Date(tx.time*1000).toISOString().slice(0,10),fromMono:true});
+window.syncMono = async () => {
+  if(!S.monoToken){ toast("Введи та збережи токен"); return; }
+  if(!S.monoAccount){ toast("Обери рахунок"); return; }
+  S.syncStatus="loading"; S.syncMsg="Синхронізація..."; render();
+  try {
+    const now = Math.floor(Date.now()/1000);
+    const from = now - 30*24*3600;
+    const r = await fetch(`https://api.monobank.ua/personal/statement/${S.monoAccount}/${from}/${now}`,{headers:{"X-Token":S.monoToken}});
+    if(r.status===429) throw new Error("Забагато запитів — зачекай 60 секунд");
+    if(!r.ok) throw new Error("Помилка API ("+r.status+")");
+    const txs = await r.json();
+    let added = 0;
+    txs.forEach(tx => {
+      if(tx.amount >= 0) return;
+      const id = "mono_"+tx.id;
+      if(S.expenses.find(e=>e.id===id)) return;
+      const cat = MCC[tx.mcc] || "Інше";
+      if(!S.expCats.includes(cat)) S.expCats.push(cat);
+      S.expenses.unshift({id, amount:Math.abs(tx.amount)/100, desc:tx.description||cat, cat, date:new Date(tx.time*1000).toISOString().slice(0,10), fromMono:true});
       added++;
     });
-    state.expenses.sort((a,b)=>b.date.localeCompare(a.date));
-    state.monoLastSync=now;
-    await saveToCloud();
-    state.syncStatus="ok";
-    state.syncMsg=added>0?`✅ Додано ${added} з ${txs.length}`:txs.length>0?`✅ Всі ${txs.length} вже є`:`✅ API повернув 0 — спробуй інший рахунок`;
-    render();toast(state.syncMsg);
-  }catch(e){state.syncStatus="err";state.syncMsg="❌ "+e.message;render();}
+    S.expenses.sort((a,b)=>b.date.localeCompare(a.date));
+    S.monoLastSync = now;
+    await cloudSave();
+    S.syncStatus="ok";
+    S.syncMsg = added>0 ? `✅ Додано ${added} з ${txs.length}` : txs.length>0 ? `✅ Всі ${txs.length} вже є` : "✅ Нових транзакцій немає";
+    render(); toast(S.syncMsg);
+  } catch(e){ S.syncStatus="err"; S.syncMsg="❌ "+e.message; render(); }
 };
 
 // ── Charts ─────────────────────────────────────────────────
-function pieChartSVG(data,size=130){
-  if(!data.length)return'<p style="color:var(--text2);font-size:13px;text-align:center;padding:20px 0">Немає даних</p>';
-  const cx=size/2,cy=size/2,r=size/2-8,total=data.reduce((s,d)=>s+d.amount,0);
-  let angle=-Math.PI/2,paths="";
+function pie(data, size=130){
+  if(!data.length) return '<p style="color:var(--text2);font-size:13px;text-align:center;padding:20px 0">Немає даних</p>';
+  const cx=size/2, cy=size/2, r=size/2-8, tot=data.reduce((s,d)=>s+d.amount,0);
+  let a=-Math.PI/2, p="";
   data.forEach(d=>{
-    const sw=(d.amount/total)*2*Math.PI,x1=cx+r*Math.cos(angle),y1=cy+r*Math.sin(angle);
-    angle+=sw;
-    paths+=`<path d="M${cx},${cy} L${x1.toFixed(1)},${y1.toFixed(1)} A${r},${r} 0 ${sw>Math.PI?1:0},1 ${(cx+r*Math.cos(angle)).toFixed(1)},${(cy+r*Math.sin(angle)).toFixed(1)} Z" fill="${d.color}" stroke="#0f0f1a" stroke-width="2"/>`;
+    const sw=(d.amount/tot)*2*Math.PI, x1=cx+r*Math.cos(a), y1=cy+r*Math.sin(a);
+    a+=sw;
+    p+=`<path d="M${cx},${cy}L${x1.toFixed(1)},${y1.toFixed(1)}A${r},${r} 0 ${sw>Math.PI?1:0},1 ${(cx+r*Math.cos(a)).toFixed(1)},${(cy+r*Math.sin(a)).toFixed(1)}Z" fill="${d.color}" stroke="#0f0f1a" stroke-width="2"/>`;
   });
-  return`<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${paths}</svg>`;
+  return`<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${p}</svg>`;
 }
 
-function barChartSVG(fExp,fInc){
-  const byDay={};
-  fExp.forEach(e=>{byDay[e.date]=byDay[e.date]||{exp:0,inc:0};byDay[e.date].exp+=e.amount;});
-  fInc.forEach(e=>{byDay[e.date]=byDay[e.date]||{exp:0,inc:0};byDay[e.date].inc+=e.amount;});
-  const sorted=Object.entries(byDay).sort((a,b)=>a[0].localeCompare(b[0])).slice(-14);
-  if(!sorted.length)return"";
-  const w=340,h=100,pad=20,max=Math.max(...sorted.flatMap(([,v])=>[v.exp,v.inc]),1);
-  const slot=(w-pad*2)/sorted.length,bw=Math.min(10,slot/2-1);
-  let bars="";
-  sorted.forEach(([date,v],i)=>{
-    const x=pad+i*slot+slot/2,hI=Math.round((v.inc/max)*h),hE=Math.round((v.exp/max)*h);
-    bars+=`<rect x="${(x-bw-1).toFixed(1)}" y="${(h-hI+4).toFixed(1)}" width="${bw}" height="${hI}" rx="2" fill="#1D9E75" opacity=".85"/>`;
-    bars+=`<rect x="${(x+1).toFixed(1)}" y="${(h-hE+4).toFixed(1)}" width="${bw}" height="${hE}" rx="2" fill="#7F77DD" opacity=".85"/>`;
-    bars+=`<text x="${x.toFixed(1)}" y="${h+18}" text-anchor="middle" font-size="9" fill="#9090b0">${date.slice(5)}</text>`;
+function bars(fExp, fInc){
+  const m={};
+  fExp.forEach(e=>{m[e.date]=m[e.date]||{e:0,i:0};m[e.date].e+=e.amount;});
+  fInc.forEach(e=>{m[e.date]=m[e.date]||{e:0,i:0};m[e.date].i+=e.amount;});
+  const s=Object.entries(m).sort((a,b)=>a[0].localeCompare(b[0])).slice(-14);
+  if(!s.length) return "";
+  const W=340,H=100,pad=20,mx=Math.max(...s.flatMap(([,v])=>[v.e,v.i]),1);
+  const sl=(W-pad*2)/s.length, bw=Math.min(10,sl/2-1);
+  let svg="";
+  s.forEach(([date,v],i)=>{
+    const x=pad+i*sl+sl/2, hI=Math.round((v.i/mx)*H), hE=Math.round((v.e/mx)*H);
+    svg+=`<rect x="${(x-bw-1).toFixed(1)}" y="${(H-hI+4).toFixed(1)}" width="${bw}" height="${hI}" rx="2" fill="#1D9E75" opacity=".85"/>`;
+    svg+=`<rect x="${(x+1).toFixed(1)}" y="${(H-hE+4).toFixed(1)}" width="${bw}" height="${hE}" rx="2" fill="#7F77DD" opacity=".85"/>`;
+    svg+=`<text x="${x.toFixed(1)}" y="${H+18}" text-anchor="middle" font-size="9" fill="#9090b0">${date.slice(5)}</text>`;
   });
-  return`<svg viewBox="0 0 ${w} ${h+24}" width="100%" style="display:block">${bars}</svg>`;
+  return`<svg viewBox="0 0 ${W} ${H+24}" width="100%" style="display:block">${svg}</svg>`;
 }
 
-function byCatData(list,cats,cols){
+function catData(list, cats, cols){
   return cats.map((cat,i)=>({cat,color:cols[i%cols.length],amount:list.filter(e=>e.cat===cat).reduce((s,e)=>s+e.amount,0)})).filter(d=>d.amount>0).sort((a,b)=>b.amount-a.amount);
+}
+
+function legendHTML(data){
+  return data.map(x=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+    <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:2px;background:${x.color};display:inline-block"></span><span style="font-size:12px">${x.cat}</span></span>
+    <span style="font-size:12px;font-weight:500">₴${fmt(x.amount)}</span></div>`).join("");
 }
 
 // ── Views ──────────────────────────────────────────────────
 function authScreen(){
-  const isReg=authMode==="register";
+  const reg = authMode==="register";
   return`<div class="auth-wrap">
     <div style="font-size:48px">💸</div>
-    <h2>${isReg?"Реєстрація":"Вхід"}</h2>
-    <p>${isReg?"Створи акаунт — дані синхронізуватимуться між усіма пристроями":"Введи email і пароль щоб увійти"}</p>
+    <h2>${reg?"Реєстрація":"Вхід"}</h2>
+    <p>${reg?"Створи акаунт — дані синхронізуються між усіма пристроями":"Введи email і пароль"}</p>
     <div class="auth-form">
-      <input id="auth-email" type="email" placeholder="Email" autocomplete="email"/>
-      <input id="auth-pass" type="password" placeholder="Пароль (мін. 6 символів)" autocomplete="${isReg?"new-password":"current-password"}" onkeydown="if(event.key==='Enter')doAuth()"/>
+      <input id="auth-email" type="email" inputmode="email" placeholder="Email" autocomplete="email"/>
+      <input id="auth-pass" type="password" placeholder="Пароль (мін. 6 символів)" autocomplete="${reg?"new-password":"current-password"}" onkeydown="if(event.key==='Enter')doAuth()"/>
       <div id="auth-err" class="auth-error"></div>
-      <button class="submit auth" onclick="doAuth()">${isReg?"Зареєструватись":"Увійти"}</button>
+      <button class="submit auth" onclick="doAuth()">${reg?"Зареєструватись":"Увійти"}</button>
     </div>
-    <div class="auth-switch">${isReg?"Вже є акаунт?":"Немає акаунту?"} <span onclick="toggleAuthMode()">${isReg?"Увійти":"Зареєструватись"}</span></div>
+    <div class="auth-switch">${reg?"Вже є акаунт?":"Немає акаунту?"} <span onclick="toggleAuthMode()">${reg?"Увійти":"Зареєструватись"}</span></div>
   </div>`;
 }
 
-const views={
+const views = {
   dashboard(){
-    const m=state.filterMonth;
-    const fExp=state.expenses.filter(e=>!m||e.date.startsWith(m));
-    const fInc=state.incomes.filter(e=>!m||e.date.startsWith(m));
-    const tE=fExp.reduce((s,e)=>s+e.amount,0),tI=fInc.reduce((s,e)=>s+e.amount,0),bal=tI-tE;
-    const allMonths=[...new Set([...state.expenses,...state.incomes].map(e=>e.date.slice(0,7)))].sort().reverse();
-    const expByCat=byCatData(fExp,state.expCats,ECOLS),incByCat=byCatData(fInc,state.incCats,ICOLS);
-    const monoCount=state.expenses.filter(e=>e.fromMono&&(!m||e.date.startsWith(m))).length;
-    const legendRow=d=>d.map(x=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:2px;background:${x.color};display:inline-block"></span><span style="font-size:12px">${x.cat}</span></span><span style="font-size:12px;font-weight:500">₴${fmt(x.amount)}</span></div>`).join("");
+    const m=S.filterMonth;
+    const fExp=S.expenses.filter(e=>!m||e.date.startsWith(m));
+    const fInc=S.incomes.filter(e=>!m||e.date.startsWith(m));
+    const tE=fExp.reduce((s,e)=>s+e.amount,0), tI=fInc.reduce((s,e)=>s+e.amount,0), bal=tI-tE;
+    const months=[...new Set([...S.expenses,...S.incomes].map(e=>e.date.slice(0,7)))].sort().reverse();
+    const eBC=catData(fExp,S.expCats,ECOLS), iBC=catData(fInc,S.incCats,ICOLS);
+    const mC=S.expenses.filter(e=>e.fromMono&&(!m||e.date.startsWith(m))).length;
     return`
-    <select onchange="state.filterMonth=this.value;render()" style="margin-bottom:14px">
-      <option value="">Всі місяці</option>${allMonths.map(mm=>`<option value="${mm}"${mm===m?"selected":""}>${mm}</option>`).join("")}
+    <select onchange="S.filterMonth=this.value;render()" style="margin-bottom:14px">
+      <option value="">Всі місяці</option>${months.map(mm=>`<option value="${mm}"${mm===m?"selected":""}>${mm}</option>`).join("")}
     </select>
-    ${monoCount>0?`<div style="font-size:12px;color:var(--orange);margin-bottom:10px">🔶 ${monoCount} транзакцій з Monobank</div>`:""}
+    ${mC?`<div style="font-size:12px;color:var(--orange);margin-bottom:10px">🔶 ${mC} транзакцій з Monobank</div>`:""}
     <div class="stats">
       <div class="stat"><div class="stat-label">Доходи</div><div class="stat-val" style="color:var(--green)">₴${fmt(tI)}</div></div>
       <div class="stat"><div class="stat-label">Витрати</div><div class="stat-val" style="color:var(--purple)">₴${fmt(tE)}</div></div>
       <div class="stat"><div class="stat-label">Баланс</div><div class="stat-val" style="color:${bal>=0?"var(--green)":"var(--red)"}">${bal>=0?"+":""}₴${fmt(bal)}</div></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-      <div class="card"><div class="sec" style="margin-top:0">Доходи</div>${pieChartSVG(incByCat)}<div style="margin-top:10px">${legendRow(incByCat)}</div></div>
-      <div class="card"><div class="sec" style="margin-top:0">Витрати</div>${pieChartSVG(expByCat)}<div style="margin-top:10px">${legendRow(expByCat)}</div></div>
+      <div class="card"><div class="sec" style="margin-top:0">Доходи</div>${pie(iBC)}<div style="margin-top:10px">${legendHTML(iBC)}</div></div>
+      <div class="card"><div class="sec" style="margin-top:0">Витрати</div>${pie(eBC)}<div style="margin-top:10px">${legendHTML(eBC)}</div></div>
     </div>
-    ${(state.expenses.length||state.incomes.length)?`<div class="card"><div class="sec" style="margin-top:0">По днях (14 днів)</div>
-    <div style="display:flex;gap:14px;margin-bottom:8px">
-      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:2px;background:var(--green);display:inline-block"></span>Доходи</div>
-      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:2px;background:var(--purple);display:inline-block"></span>Витрати</div>
-    </div>${barChartSVG(fExp,fInc)}</div>`:""}`;
+    ${(S.expenses.length||S.incomes.length)?`<div class="card">
+      <div class="sec" style="margin-top:0">По днях (14 днів)</div>
+      <div style="display:flex;gap:14px;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:2px;background:var(--green);display:inline-block"></span>Доходи</div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:2px;background:var(--purple);display:inline-block"></span>Витрати</div>
+      </div>${bars(fExp,fInc)}</div>`:""}`;
   },
 
   sync(){
-    const lastSync=state.monoLastSync>0?new Date(state.monoLastSync*1000).toLocaleString("uk-UA"):"ніколи";
-    const accOpts=state.monoAccounts.map(a=>`<option value="${a.id}"${a.id===state.monoAccount?"selected":""}>${a.label}</option>`).join("");
-    const statusHtml=state.syncMsg?`<div style="font-size:12px;margin-top:8px;color:${state.syncStatus==="ok"?"var(--green)":"var(--red)"}">${state.syncMsg}</div>`:"";
+    const ls=S.monoLastSync>0?new Date(S.monoLastSync*1000).toLocaleString("uk-UA"):"ніколи";
+    const accOpts=S.monoAccounts.map(a=>`<option value="${a.id}"${a.id===S.monoAccount?"selected":""}>${a.label}</option>`).join("");
+    const st=S.syncMsg?`<div style="font-size:12px;margin-top:8px;color:${S.syncStatus==="ok"?"var(--green)":"var(--red)"}">${S.syncMsg}</div>`:"";
     return`
     <div class="card">
       <div style="font-weight:600;font-size:15px;margin-bottom:10px">🔶 Monobank</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.6">Токен → <b style="color:var(--text)">api.monobank.ua</b><br>Зберігається тільки локально на цьому пристрої</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.6">Токен: <b style="color:var(--text)">api.monobank.ua</b><br>Зберігається тільки локально на цьому пристрої</div>
       <div style="display:grid;gap:10px">
-        <input id="mono-token-inp" type="text" placeholder="Токен Monobank" value="${state.monoToken}"/>
-        <button style="padding:10px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;font-weight:500" onclick="saveToken()">💾 Зберегти токен</button>
-        <button style="padding:10px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;font-weight:500" onclick="loadAccounts()">Завантажити рахунки</button>
-        ${state.monoAccounts.length?`<select onchange="state.monoAccount=this.value"><option value="">— обери рахунок —</option>${accOpts}</select>
+        <input id="mono-inp" type="text" placeholder="Токен Monobank" value="${S.monoToken}" autocomplete="off" autocorrect="off" spellcheck="false"/>
+        <button style="padding:10px;background:var(--purple);color:#fff;border-radius:8px;font-weight:500" onclick="saveMonoToken()">💾 Зберегти токен</button>
+        <button style="padding:10px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;font-weight:500" onclick="loadAccounts()">📋 Завантажити рахунки</button>
+        ${S.monoAccounts.length?`
+        <select onchange="S.monoAccount=this.value"><option value="">— обери рахунок —</option>${accOpts}</select>
         <button style="padding:10px;background:var(--orange);color:#fff;border-radius:8px;font-weight:600" onclick="syncMono()">⬇ Синхронізувати витрати</button>
-        <div style="font-size:12px;color:var(--text2)">Остання синхронізація: ${lastSync}</div>`:""}
-        ${statusHtml}
+        <div style="font-size:12px;color:var(--text2)">Остання синхронізація: ${ls}</div>`:""}
+        ${st}
       </div>
     </div>
     <div class="card">
@@ -373,116 +417,125 @@ const views={
   },
 
   add(){
-    const t=state.addType,cats=t==="income"?state.incCats:state.expCats,f=state.form;
+    const t=S.addType, cats=t==="income"?S.incCats:S.expCats, f=S.form;
     return`
     <div class="toggle">
-      <button class="inc${t==="income"?" active":""}" onclick="state.addType='income';state.form.cat='';render()">💰 Дохід</button>
-      <button class="exp${t==="expense"?" active":""}" onclick="state.addType='expense';state.form.cat='';render()">💸 Витрата</button>
+      <button class="inc${t==="income"?" active":""}" onclick="S.addType='income';S.form.cat='';render()">💰 Дохід</button>
+      <button class="exp${t==="expense"?" active":""}" onclick="S.addType='expense';S.form.cat='';render()">💸 Витрата</button>
     </div>
-    <div style="display:grid;gap:10px">
-      <div><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Сума (₴) *</label>
-        <input type="number" inputmode="decimal" placeholder="0.00" value="${f.amount}" oninput="state.form.amount=this.value"/></div>
-      <div><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">${t==="income"?"Джерело":"Категорія"} *</label>
-        <select onchange="state.form.cat=this.value"><option value="">— обери —</option>${cats.map(c=>`<option value="${c}"${c===f.cat?"selected":""}>${c}</option>`).join("")}</select></div>
-      <div><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Опис</label>
-        <input placeholder="${t==="income"?"Аванс, проєкт...":"Кава, таксі..."}" value="${f.desc}" oninput="state.form.desc=this.value"/></div>
-      <div><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">Дата *</label>
-        <input type="date" value="${f.date}" onchange="state.form.date=this.value"/></div>
+    <div style="display:grid;gap:12px">
+      <div><label class="lbl">Сума (₴) *</label><input type="number" inputmode="decimal" placeholder="0.00" value="${f.amount}" oninput="S.form.amount=this.value"/></div>
+      <div><label class="lbl">${t==="income"?"Джерело":"Категорія"} *</label>
+        <select onchange="S.form.cat=this.value"><option value="">— обери —</option>${cats.map(c=>`<option value="${c}"${c===f.cat?"selected":""}>${c}</option>`).join("")}</select></div>
+      <div><label class="lbl">Опис</label><input placeholder="${t==="income"?"Аванс, проєкт...":"Кава, таксі..."}" value="${f.desc}" oninput="S.form.desc=this.value"/></div>
+      <div><label class="lbl">Дата *</label><input type="date" value="${f.date}" onchange="S.form.date=this.value"/></div>
       <button class="submit ${t}" onclick="addEntry()">Додати ${t==="income"?"дохід":"витрату"}</button>
     </div>`;
   },
 
   history(){
-    const ht=state.histType,m=state.filterMonth;
-    const allMonths=[...new Set([...state.expenses,...state.incomes].map(e=>e.date.slice(0,7)))].sort().reverse();
+    const ht=S.histType, m=S.filterMonth;
+    const months=[...new Set([...S.expenses,...S.incomes].map(e=>e.date.slice(0,7)))].sort().reverse();
     const list=[
-      ...(ht!=="income"?state.expenses.map(e=>({...e,_t:"expense"})):[]),
-      ...(ht!=="expense"?state.incomes.map(e=>({...e,_t:"income"})):[]),
+      ...(ht!=="income"?S.expenses.map(e=>({...e,_t:"expense"})):[]),
+      ...(ht!=="expense"?S.incomes.map(e=>({...e,_t:"income"})):[]),
     ].filter(e=>!m||e.date.startsWith(m)).sort((a,b)=>b.date.localeCompare(a.date)||String(b.id).localeCompare(String(a.id)));
     const rows=list.map(e=>{
-      const isI=e._t==="income",cats=isI?state.incCats:state.expCats,cols=isI?ICOLS:ECOLS;
-      const col=cols[cats.indexOf(e.cat)%cols.length]||cols[0];
-      return`<div class="entry"><span class="dot" style="background:${col}"></span>
-        <div class="entry-info"><div class="entry-name">${e.desc||e.cat}${e.fromMono?'<span style="font-size:10px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1px 5px;color:var(--text2);margin-left:4px">mono</span>':''}</div>
-        <div class="entry-sub">${e.cat} · ${e.date}</div></div>
+      const isI=e._t==="income", cats=isI?S.incCats:S.expCats, cols=isI?ICOLS:ECOLS;
+      const ci=cats.indexOf(e.cat), col=cols[ci>=0?ci%cols.length:0];
+      return`<div class="entry">
+        <span class="dot" style="background:${col}"></span>
+        <div class="entry-info">
+          <div class="entry-name">${e.desc||e.cat}${e.fromMono?'<span class="mono-tag">mono</span>':''}</div>
+          <div class="entry-sub">${e.cat} · ${e.date}</div>
+        </div>
         <span class="entry-amt" style="color:${isI?"var(--green)":"var(--purple)"}">${isI?"+":"-"}₴${fmt(e.amount)}</span>
-        <button class="del-btn" onclick="delEntry('${e.id}','${e._t}')">×</button></div>`;
+        <button class="del-btn" onclick="delEntry('${e.id}','${e._t}')" aria-label="Видалити">×</button>
+      </div>`;
     }).join("")||`<div class="empty">Немає записів</div>`;
     return`<div class="filters">
-      <select onchange="state.histType=this.value;render()">
+      <select onchange="S.histType=this.value;render()">
         <option value="all"${ht==="all"?" selected":""}>Всі</option>
         <option value="income"${ht==="income"?" selected":""}>Доходи</option>
         <option value="expense"${ht==="expense"?" selected":""}>Витрати</option>
       </select>
-      <select onchange="state.filterMonth=this.value;render()"><option value="">Всі місяці</option>${allMonths.map(mm=>`<option value="${mm}"${mm===m?"selected":""}>${mm}</option>`).join("")}</select>
+      <select onchange="S.filterMonth=this.value;render()"><option value="">Всі місяці</option>${months.map(mm=>`<option value="${mm}"${mm===m?"selected":""}>${mm}</option>`).join("")}</select>
     </div>${rows}`;
   },
 
   categories(){
     return[
-      {label:"💰 Джерела доходів",t:"income",cats:state.incCats,cols:ICOLS},
-      {label:"💸 Категорії витрат",t:"expense",cats:state.expCats,cols:ECOLS},
+      {label:"💰 Джерела доходів",t:"income",cats:S.incCats,cols:ICOLS},
+      {label:"💸 Категорії витрат",t:"expense",cats:S.expCats,cols:ECOLS},
     ].map(({label,t,cats,cols})=>`<div class="card">
       <div style="font-weight:600;font-size:15px;margin-bottom:12px">${label}</div>
-      <div class="chips">${cats.map((c,i)=>`<div class="chip"><span class="cdot" style="background:${cols[i%cols.length]}"></span><span>${c}</span><button class="cx" onclick="delCat('${c}','${t}')">×</button></div>`).join("")}</div>
-      <div class="add-row"><input id="nc-${t}" placeholder="Нова ${t==="income"?"джерело":"категорія"}..." onkeydown="if(event.key==='Enter')addCat('${t}')"/><button onclick="addCat('${t}')">+</button></div>
+      <div class="chips">${cats.map((c,i)=>`<div class="chip">
+        <span class="cdot" style="background:${cols[i%cols.length]}"></span>
+        <span>${c}</span>
+        <button class="cx" onclick="delCat('${c}','${t}')" aria-label="Видалити ${c}">×</button>
+      </div>`).join("")}</div>
+      <div class="add-row">
+        <input id="nc-${t}" placeholder="Нова ${t==="income"?"джерело":"категорія"}..." onkeydown="if(event.key==='Enter')addCat('${t}')"/>
+        <button onclick="addCat('${t}')" aria-label="Додати">+</button>
+      </div>
     </div>`).join("");
   }
 };
 
 // ── Render ─────────────────────────────────────────────────
-window.render=()=>{
-  const app=document.getElementById("app"),nav=document.getElementById("mainnav");
-  if(!uid){app.innerHTML=authScreen();nav.style.display="none";return;}
+window.render = () => {
+  const app=document.getElementById("app"), nav=document.getElementById("mainnav");
+  if(!uid){ app.innerHTML=authScreen(); nav.style.display="none"; return; }
   nav.style.display="flex";
-  app.innerHTML=views[state.tab]?views[state.tab]():"";
+  app.innerHTML = views[S.tab] ? views[S.tab]() : "";
   ["dashboard","add","history","categories"].forEach(t=>{
-    const b=document.getElementById("nav-"+t);
-    if(b)b.classList.toggle("active",state.tab===t);
+    document.getElementById("nav-"+t)?.classList.toggle("active",S.tab===t);
   });
 };
 
-window.setTab=t=>{state.tab=t;render();};
+window.setTab = t => { S.tab=t; render(); };
 
-window.addEntry=async()=>{
-  const f=state.form,t=state.addType,amt=parseFloat(f.amount);
-  if(!f.amount||!f.cat||!f.date||isNaN(amt)||amt<=0){toast("Заповни всі поля ✏️");return;}
-  const entry={id:Date.now(),amount:amt,desc:f.desc,cat:f.cat,date:f.date};
-  if(t==="expense")state.expenses.unshift(entry);else state.incomes.unshift(entry);
-  state.form={amount:"",desc:"",cat:"",date:todayStr()};
-  await saveToCloud();render();toast(t==="income"?"Дохід додано 💰":"Витрату додано 💸");
+// ── Actions ────────────────────────────────────────────────
+window.addEntry = async () => {
+  const f=S.form, t=S.addType, amt=parseFloat(f.amount);
+  if(!f.amount||!f.cat||!f.date||isNaN(amt)||amt<=0){ toast("Заповни всі поля ✏️"); return; }
+  const entry={id:Date.now(),amount:amt,desc:f.desc.trim(),cat:f.cat,date:f.date};
+  if(t==="expense") S.expenses.unshift(entry); else S.incomes.unshift(entry);
+  S.form={amount:"",desc:"",cat:"",date:today()};
+  await cloudSave(); render();
+  toast(t==="income"?"Дохід додано 💰":"Витрату додано 💸");
 };
 
-window.delEntry=async(id,t)=>{
-  if(t==="expense")state.expenses=state.expenses.filter(e=>String(e.id)!==String(id));
-  else state.incomes=state.incomes.filter(e=>String(e.id)!==String(id));
-  await saveToCloud();render();
+window.delEntry = async (id, t) => {
+  if(t==="expense") S.expenses=S.expenses.filter(e=>String(e.id)!==String(id));
+  else S.incomes=S.incomes.filter(e=>String(e.id)!==String(id));
+  await cloudSave(); render();
 };
 
-window.addCat=async(t)=>{
-  const el=document.getElementById("nc-"+t),c=el?.value.trim();if(!c)return;
-  if(t==="expense"&&!state.expCats.includes(c))state.expCats.push(c);
-  if(t==="income"&&!state.incCats.includes(c))state.incCats.push(c);
-  await saveToCloud();render();
+window.addCat = async t => {
+  const el=document.getElementById("nc-"+t), c=el?.value.trim(); if(!c) return;
+  if(t==="expense"&&!S.expCats.includes(c)) S.expCats.push(c);
+  if(t==="income"&&!S.incCats.includes(c)) S.incCats.push(c);
+  await cloudSave(); render();
 };
 
-window.delCat=async(c,t)=>{
-  if(t==="expense"){state.expCats=state.expCats.filter(x=>x!==c);state.expenses=state.expenses.map(e=>e.cat===c?{...e,cat:"Інше"}:e);}
-  else{state.incCats=state.incCats.filter(x=>x!==c);state.incomes=state.incomes.map(e=>e.cat===c?{...e,cat:"Інше"}:e);}
-  await saveToCloud();render();
+window.delCat = async (c, t) => {
+  if(t==="expense"){ S.expCats=S.expCats.filter(x=>x!==c); S.expenses=S.expenses.map(e=>e.cat===c?{...e,cat:"Інше"}:e); }
+  else { S.incCats=S.incCats.filter(x=>x!==c); S.incomes=S.incomes.map(e=>e.cat===c?{...e,cat:"Інше"}:e); }
+  await cloudSave(); render();
 };
 
-window.toast=msg=>{
-  const t=document.getElementById("toast");
-  t.textContent=msg;t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),2200);
+window.toast = msg => {
+  const el=document.getElementById("toast");
+  el.textContent=msg; el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),2500);
 };
 
 // ── PWA ────────────────────────────────────────────────────
-const manifest={name:"Мої фінанси",short_name:"Фінанси",start_url:".",display:"standalone",background_color:"#0f0f1a",theme_color:"#1a1a2e",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a2e'/><text y='.9em' font-size='72' x='12'>💸</text></svg>",sizes:"any",type:"image/svg+xml"}]};
-document.getElementById("manifestLink").href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:"application/json"}));
-if("serviceWorker"in navigator){
-  const sw=`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>clients.claim());self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).catch(()=>new Response(''))));`;
+const mf={name:"Мої фінанси",short_name:"Фінанси",start_url:"./",display:"standalone",background_color:"#0f0f1a",theme_color:"#1a1a2e",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a2e'/><text y='.9em' font-size='72' x='12'>💸</text></svg>",sizes:"any",type:"image/svg+xml"}]};
+document.getElementById("manifestLink").href=URL.createObjectURL(new Blob([JSON.stringify(mf)],{type:"application/json"}));
+if("serviceWorker" in navigator){
+  const sw=`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>clients.claim());self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));});`;
   navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:"application/javascript"}))).catch(()=>{});
 }
 </script>
