@@ -419,21 +419,18 @@ const views = {
 
   add(){
     const t=S.addType, cats=t==="income"?S.incCats:S.expCats, f=S.form;
-    const validAmt = !isNaN(parseFloat(f.amount)) && parseFloat(f.amount) > 0;
-    const canSubmit = validAmt && !!f.cat && !!f.date;
     return`
     <div class="toggle">
       <button class="inc${t==="income"?" active":""}" onclick="S.addType='income';S.form.cat=S.incCats[0]||'';render()">💰 Дохід</button>
       <button class="exp${t==="expense"?" active":""}" onclick="S.addType='expense';S.form.cat=S.expCats[0]||'';render()">💸 Витрата</button>
     </div>
     <div style="display:grid;gap:12px">
-      <div><label class="lbl">Сума (₴) *</label><input type="number" inputmode="decimal" placeholder="0.00" value="${f.amount}" oninput="S.form.amount=this.value;render()"/></div>
+      <div><label class="lbl">Сума (₴) *</label><input type="number" inputmode="decimal" placeholder="0.00" value="${f.amount}" oninput="S.form.amount=this.value"/></div>
       <div><label class="lbl">${t==="income"?"Джерело":"Категорія"} *</label>
-        <select onchange="S.form.cat=this.value;render()"><option value="">— обери —</option>${cats.map(c=>`<option value="${c}"${c===f.cat?"selected":""}>${c}</option>`).join("")}</select></div>
+        <select onchange="S.form.cat=this.value"><option value="">— обери —</option>${cats.map(c=>`<option value="${c}"${c===f.cat?"selected":""}>${c}</option>`).join("")}</select></div>
       <div><label class="lbl">Опис</label><input placeholder="${t==="income"?"Аванс, проєкт...":"Кава, таксі..."}" value="${f.desc}" oninput="S.form.desc=this.value"/></div>
-      <div><label class="lbl">Дата *</label><input type="date" value="${f.date}" onchange="S.form.date=this.value;render()"/></div>
-      ${t==="income" && !S.incCats.length ? '<div style="font-size:12px;color:var(--orange)">Немає джерел доходу. <span style="text-decoration:underline;cursor:pointer" onclick="setTab('categories')">Додай у Категоріях</span></div>' : ''}
-      <button class="submit ${t==="income"?"inc":"exp"}" ${canSubmit?"":"disabled"} onclick="addEntry()">Додати ${t==="income"?"дохід":"витрату"}</button>
+      <div><label class="lbl">Дата *</label><input type="date" value="${f.date}" onchange="S.form.date=this.value"/></div>
+      <button class="submit ${t==="income"?"inc":"exp"}" onclick="addEntry()">Додати ${t==="income"?"дохід":"витрату"}</button>
     </div>`;
   },
 
