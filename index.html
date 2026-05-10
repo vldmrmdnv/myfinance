@@ -528,8 +528,19 @@ window.addCat = async t => {
 };
 
 window.delCat = async (c, t) => {
-  if(t==="expense"){ S.expCats=S.expCats.filter(x=>x!==c); S.expenses=S.expenses.map(e=>e.cat===c?{...e,cat:"Інше"}:e); }
-  else { S.incCats=S.incCats.filter(x=>x!==c); S.incomes=S.incomes.map(e=>e.cat===c?{...e,cat:"Інше"}:e); }
+  if(t==="expense"){
+    if(S.expCats.length<=1){ toast("Має залишитись хоча б 1 категорія витрат"); return; }
+    S.expCats=S.expCats.filter(x=>x!==c);
+    S.expenses=S.expenses.map(e=>e.cat===c?{...e,cat:S.expCats[0]||"Інше"}:e);
+  } else {
+    if(S.incCats.length<=1){ toast("Має залишитись хоча б 1 джерело доходу"); return; }
+    S.incCats=S.incCats.filter(x=>x!==c);
+    S.incomes=S.incomes.map(e=>e.cat===c?{...e,cat:S.incCats[0]||"Інше"}:e);
+  }
+  if(S.tab==='add' && !S.form.cat){
+    const cats = S.addType==='income' ? S.incCats : S.expCats;
+    S.form.cat = cats[0] || '';
+  }
   await cloudSave(); render();
 };
 
